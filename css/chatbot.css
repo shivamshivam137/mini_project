@@ -1,0 +1,165 @@
+/* Spark Chatbot UI */
+.spark-container {
+    position: fixed;
+    bottom: var(--spacing-lg);
+    right: var(--spacing-lg);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-family: var(--font-main);
+}
+
+.spark-fab {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    color: var(--bg-color);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.spark-fab:hover {
+    transform: scale(1.1);
+    background: var(--accent-hover);
+}
+
+.spark-window {
+    width: 380px;
+    height: 500px;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    margin-bottom: var(--spacing-md);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideUp 0.3s ease-out;
+}
+
+.spark-window.show {
+    display: flex;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.spark-header {
+    padding: var(--spacing-md);
+    background: var(--accent-color);
+    color: var(--bg-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.spark-title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-weight: 600;
+}
+
+.spark-close {
+    cursor: pointer;
+    background: none;
+    color: var(--bg-color);
+    opacity: 0.8;
+}
+
+.spark-close:hover {
+    opacity: 1;
+}
+
+.spark-messages {
+    flex: 1;
+    padding: var(--spacing-md);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    background: var(--bg-color);
+}
+
+.message {
+    max-width: 80%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    font-size: 0.9375rem;
+    line-height: 1.4;
+}
+
+.message-bot {
+    align-self: flex-start;
+    background: var(--surface-color);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-bottom-left-radius: 0;
+}
+
+.message-user {
+    align-self: flex-end;
+    background: var(--accent-color);
+    color: var(--bg-color);
+    border-bottom-right-radius: 0;
+}
+
+.spark-input-area {
+    padding: var(--spacing-md);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.spark-input {
+    flex: 1;
+    border: 1px solid var(--border-color);
+    padding: 0.75rem;
+    border-radius: var(--radius-md);
+    outline: none;
+    font-family: inherit;
+    font-size: 0.875rem;
+}
+
+.spark-input:focus {
+    border-color: var(--accent-color);
+}
+
+.spark-send {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    padding: 0.75rem;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Typing indicator */
+.typing {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    margin-bottom: 2px;
+}
+
+@media (max-width: 480px) {
+    .spark-window {
+        width: calc(100vw - 40px);
+        height: 70vh;
+    }
+}
