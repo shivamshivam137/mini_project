@@ -2,4 +2,4 @@
 ## demo text
 - tejas p
 - shivam s
-- Aditya j
+- Aditya

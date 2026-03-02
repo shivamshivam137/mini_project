@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Civitas | About Us</title>
+    <meta name="description"
+        content="Learn about the mission, vision, and team behind Civitas—your gateway to active citizenship.">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/chatbot.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+
+<body>
+    <!-- 1. Floating Mesh Background -->
+    <div class="mesh-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="app-navigation">
+        <div class="container nav-content">
+            <a href="../index.html" class="logo">
+                <i data-lucide="shield-check"></i>
+                <span>Civitas</span>
+            </a>
+
+            <button class="mobile-toggle" onclick="toggleMenu()">
+                <i data-lucide="menu"></i>
+            </button>
+
+            <ul class="nav-links" id="nav-links">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="learning.html" class="nav-link">Learning</a></li>
+                <li><a href="schemes.html" class="nav-link">Schemes</a></li>
+                <li><a href="participation.html" class="nav-link">Participation</a></li>
+                <li><a href="reports.html" class="nav-link">Reports</a></li>
+                <li><a href="resources.html" class="nav-link">Resources</a></li>
+                <li><a href="about.html" class="nav-link active">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="main-content" class="container">
+        <!-- Hero Section -->
+        <section class="hero-section reveal reveal-up" style="padding: var(--spacing-2xl) 0; text-align: center;">
+            <span class="tag" style="margin-bottom: var(--spacing-sm);">Who We Are</span>
+            <h1 class="section-title" style="font-size: 3.5rem; margin-bottom: var(--spacing-md);">About <span
+                    style="background: linear-gradient(135deg, var(--accent-color), var(--secondary-accent)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Civitas</span>
+            </h1>
+            <p class="section-description" style="font-size: 1.25rem; max-width: 800px; margin: 0 auto;">Empowering
+                citizens through nonpartisan information, accessible resources, and community-driven civic education.
+            </p>
+        </section>
+
+        <!-- Mission Section -->
+        <section style="margin-top: var(--spacing-2xl);">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-2xl); align-items: center;">
+                <div class="reveal reveal-left">
+                    <span class="tag" style="margin-bottom: var(--spacing-sm);">What Drives Us</span>
+                    <h2 style="font-size: 2.25rem; margin-bottom: var(--spacing-md);">Our Mission</h2>
+                    <p style="color: var(--text-secondary); margin-bottom: var(--spacing-md);">
+                        Civitas exists to bridge the gap between citizens and the democratic process. We believe that an
+                        informed electorate is the foundation of a healthy democracy. Through clear, nonpartisan voter
+                        information we empower every resident to participate meaningfully.
+                    </p>
+                    <p style="color: var(--text-secondary);">
+                        From understanding your rights to finding local services, we're here at every step of your civic
+                        journey. Democracy is defined by action—and we ensure you have the tools to make an impact.
+                    </p>
+                </div>
+                <div class="stagger-group" style="display: grid; gap: var(--spacing-md);">
+                    <div class="card reveal reveal-right">
+                        <div style="display: flex; align-items: center; gap: var(--spacing-md);">
+                            <div class="card-icon"><i data-lucide="scale"></i></div>
+                            <div>
+                                <h3 class="card-title" style="margin: 0; font-size: 1.1rem;">Nonpartisan</h3>
+                                <p class="card-text" style="margin: 0; font-size: 0.85rem;">Balanced, fact-based
+                                    information without political bias.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card reveal reveal-right">
+                        <div style="display: flex; align-items: center; gap: var(--spacing-md);">
+                            <div class="card-icon"><i data-lucide="accessibility"></i></div>
+                            <div>
+                                <h3 class="card-title" style="margin: 0; font-size: 1.1rem;">Accessible</h3>
+                                <p class="card-text" style="margin: 0; font-size: 0.85rem;">Plain-language guides and
+                                    inclusive design for all residents.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card reveal reveal-right">
+                        <div style="display: flex; align-items: center; gap: var(--spacing-md);">
+                            <div class="card-icon"><i data-lucide="users"></i></div>
+                            <div>
+                                <h3 class="card-title" style="margin: 0; font-size: 1.1rem;">Community-Led</h3>
+                                <p class="card-text" style="margin: 0; font-size: 0.85rem;">Built with input from
+                                    organizers, educators, and active voters.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vision Section -->
+        <section class="reveal reveal-up"
+            style="margin-top: var(--spacing-2xl); background: var(--clr-9); color: white; border-radius: var(--radius-lg); padding: var(--spacing-2xl); position: relative; overflow: hidden;">
+            <div style="position: relative; z-index: 1;">
+                <span class="tag"
+                    style="background: rgba(255,255,255,0.1); color: var(--clr-2); border-color: rgba(255,255,255,0.2); margin-bottom: var(--spacing-sm);">Looking
+                    Ahead</span>
+                <h2 style="font-size: 2.25rem; margin-bottom: var(--spacing-lg);">Our Vision</h2>
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: var(--spacing-2xl);">
+                    <div>
+                        <p style="opacity: 0.9; font-size: 1.1rem; line-height: 1.8; margin-bottom: var(--spacing-md);">
+                            We envision a future where every citizen feels equipped, motivated, and excited to
+                            participate in governance. We're working toward a community where civic engagement
+                            transcends division—where voting is normalized across generations and processes are
+                            transparent.
+                        </p>
+                        <p style="opacity: 0.9; font-size: 1.1rem; line-height: 1.8;">
+                            By 2030, we aim to reach 10 million residents with tailored civic education, supporting
+                            multilingual resources in over 30 languages. The future of our community is
+                            participatory—and it starts here.
+                        </p>
+                    </div>
+                    <div class="stagger-group"
+                        style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
+                        <div class="stat-card"
+                            style="background: rgba(255,255,255,0.05); padding: var(--spacing-lg); border-radius: var(--radius-md); text-align: center; border: 1px solid rgba(255,255,255,0.1);">
+                            <h4 style="font-size: 2.5rem; color: var(--clr-4); margin: 0;">2M+</h4>
+                            <p style="font-size: 0.75rem; text-transform: uppercase; opacity: 0.7; margin: 0;">Residents
+                                Reached</p>
+                        </div>
+                        <div class="stat-card"
+                            style="background: rgba(255,255,255,0.05); padding: var(--spacing-lg); border-radius: var(--radius-md); text-align: center; border: 1px solid rgba(255,255,255,0.1);">
+                            <h4 style="font-size: 2.5rem; color: var(--clr-4); margin: 0;">50</h4>
+                            <p style="font-size: 0.75rem; text-transform: uppercase; opacity: 0.7; margin: 0;">Regions
+                                Covered</p>
+                        </div>
+                        <div class="stat-card"
+                            style="background: rgba(255,255,255,0.05); padding: var(--spacing-lg); border-radius: var(--radius-md); text-align: center; border: 1px solid rgba(255,255,255,0.1);">
+                            <h4 style="font-size: 2.5rem; color: var(--clr-4); margin: 0;">120+</h4>
+                            <p style="font-size: 0.75rem; text-transform: uppercase; opacity: 0.7; margin: 0;">
+                                Partnerships</p>
+                        </div>
+                        <div class="stat-card"
+                            style="background: rgba(255,255,255,0.05); padding: var(--spacing-lg); border-radius: var(--radius-md); text-align: center; border: 1px solid rgba(255,255,255,0.1);">
+                            <h4 style="font-size: 2.5rem; color: var(--clr-4); margin: 0;">12</h4>
+                            <p style="font-size: 0.75rem; text-transform: uppercase; opacity: 0.7; margin: 0;">Languages
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Decorative circle -->
+            <div
+                style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: var(--clr-7); filter: blur(100px); opacity: 0.3;">
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section style="margin-top: var(--spacing-2xl); text-align: center;">
+            <span class="tag" style="margin-bottom: var(--spacing-sm);">The People Behind It</span>
+            <h2 style="font-size: 2.25rem; margin-bottom: var(--spacing-sm);">Meet the Team</h2>
+            <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto var(--spacing-xl);">Our small but
+                mighty team brings together expertise in civic technology, policy, and community organizing.</p>
+
+            <div class="stagger-group team-grid-container"
+                style="display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacing-lg); text-align: left;">
+                <!-- Gauri -->
+                <div class="card reveal reveal-up team-card-animated"
+                    style="padding: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                    <div style="overflow: hidden; height: 250px;">
+                        <img src="../assets/Gauri_profile.jpeg" alt="Gauri"
+                            style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;">
+                    </div>
+                    <div style="padding: var(--spacing-lg);">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <span class="tag" style="font-size: 0.7rem; margin-bottom: 0;">Frontend Developer</span>
+                            <a href="https://www.linkedin.com/in/gauri-koyande-2aa5633a8/" target="_blank"
+                                style="color: #0077B5; transition: transform 0.2s ease; display: inline-flex;"
+                                onmouseover="this.style.transform='scale(1.2)'"
+                                onmouseout="this.style.transform='scale(1)'">
+                                <i data-lucide="linkedin" style="width: 18px; height: 18px;"></i>
+                            </a>
+                        </div>
+                        <h3 style="margin-bottom: 8px;">Gauri</h3>
+                        <p class="card-text" style="font-size: 0.9rem;">A 2nd year student specializing in Frontend
+                            Development. Gauri focuses on crafting the visual elements and interactive interfaces of
+                            Civitas.</p>
+                    </div>
+                </div>
+
+                <!-- Shivam -->
+                <div class="card reveal reveal-up team-card-animated"
+                    style="padding: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                    <div style="overflow: hidden; height: 250px;">
+                        <img src="../assets/shivam_profile.jpeg" alt="Shivam"
+                            style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;">
+                    </div>
+                    <div style="padding: var(--spacing-lg);">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <span class="tag" style="font-size: 0.7rem; margin-bottom: 0;">Backend Developer</span>
+                            <a href="https://www.linkedin.com/in/shivam-singh-898541379?utm_source=share_via&utm_content=profile&utm_medium=member_android"
+                                target="_blank"
+                                style="color: #0077B5; transition: transform 0.2s ease; display: inline-flex;"
+                                onmouseover="this.style.transform='scale(1.2)'"
+                                onmouseout="this.style.transform='scale(1)'">
+                                <i data-lucide="linkedin" style="width: 18px; height: 18px;"></i>
+                            </a>
+                        </div>
+                        <h3 style="margin-bottom: 8px;">Shivam</h3>
+                        <p class="card-text" style="font-size: 0.9rem;">A 2nd year student handling Backend Development.
+                            Shivam ensures the server-side logic and database integrations function smoothly.</p>
+                    </div>
+                </div>
+
+                <!-- Shravan -->
+                <div class="card reveal reveal-up team-card-animated"
+                    style="padding: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                    <div style="overflow: hidden; height: 250px;">
+                        <img src="../assets/Shravan_profile.jpeg" alt="Shravan"
+                            style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;">
+                    </div>
+                    <div style="padding: var(--spacing-lg);">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <span class="tag" style="font-size: 0.7rem; margin-bottom: 0;">UI/UX Developer</span>
+                            <a href="https://www.linkedin.com/in/shravan-jadhav-1558203b1" target="_blank"
+                                style="color: #0077B5; transition: transform 0.2s ease; display: inline-flex;"
+                                onmouseover="this.style.transform='scale(1.2)'"
+                                onmouseout="this.style.transform='scale(1)'">
+                                <i data-lucide="linkedin" style="width: 18px; height: 18px;"></i>
+                            </a>
+                        </div>
+                        <h3 style="margin-bottom: 8px;">Shravan</h3>
+                        <p class="card-text" style="font-size: 0.9rem;">A 2nd year student focused on UI/UX Design.
+                            Shravan designs the user experience to be simple, effective, and visually appealing.</p>
+                    </div>
+                </div>
+
+                <!-- Aditya -->
+                <div class="card reveal reveal-up team-card-animated"
+                    style="padding: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                    <div style="overflow: hidden; height: 250px;">
+                        <img src="../assets/Aditya_profile.png" alt="Aditya"
+                            style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;">
+                    </div>
+                    <div style="padding: var(--spacing-lg);">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <span class="tag" style="font-size: 0.7rem; margin-bottom: 0;">All Rounder</span>
+                            <a href="https://www.linkedin.com/in/adijadhav27?utm_source=share_via&utm_content=profile&utm_medium=member_android"
+                                target="_blank"
+                                style="color: #0077B5; transition: transform 0.2s ease; display: inline-flex;"
+                                onmouseover="this.style.transform='scale(1.2)'"
+                                onmouseout="this.style.transform='scale(1)'">
+                                <i data-lucide="linkedin" style="width: 18px; height: 18px;"></i>
+                            </a>
+                        </div>
+                        <h3 style="margin-bottom: 8px;">Aditya</h3>
+                        <p class="card-text" style="font-size: 0.9rem;">A 2nd year student and All Rounder. Aditya
+                            manages the overall project integration and technical coordination for Civitas.</p>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                @media (max-width: 1024px) {
+                    .team-grid-container {
+                        grid-template-columns: repeat(2, 1fr) !important;
+                    }
+                }
+
+                @media (max-width: 600px) {
+                    .team-grid-container {
+                        grid-template-columns: 1fr !important;
+                    }
+                }
+
+                .team-card-animated:hover {
+                    transform: translateY(-12px) scale(1.03) !important;
+                    box-shadow: 0 25px 50px rgba(0, 119, 182, 0.25) !important;
+                    border-color: var(--clr-5) !important;
+                    z-index: 10;
+                }
+
+                .team-card-animated:hover img {
+                    transform: scale(1.1);
+                }
+            </style>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="reveal reveal-up"
+            style="margin-top: var(--spacing-2xl); margin-bottom: var(--spacing-2xl); background: var(--clr-7); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-lg); text-align: center;">
+            <h2 style="font-size: 2rem; margin-bottom: var(--spacing-md);">Ready to make an impact?</h2>
+            <p style="max-width: 600px; margin: 0 auto var(--spacing-lg); opacity: 0.9;">Whether you want to volunteer,
+                spread the word, or help fund our mission—there's a place for you in our community.</p>
+            <button class="btn btn-primary" style="background: white; color: var(--clr-7);"
+                onclick="Spark.toggle()">Join Our Community</button>
+        </section>
+    </main>
+
+    <footer style="padding: var(--spacing-2xl) 0; border-top: 1px solid var(--border-color); margin-top: auto;">
+        <div class="container"
+            style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-md);">
+            <div>
+                <div class="logo">
+                    <i data-lucide="shield-check"></i>
+                    <span>Civitas</span>
+                </div>
+                <p style="color: var(--text-tertiary); font-size: 0.875rem; margin-top: var(--spacing-sm);">Empowering
+                    citizens through knowledge and action.</p>
+            </div>
+            <div style="display: flex; gap: var(--spacing-xl);">
+                <a href="#" style="color: var(--text-secondary); font-size: 0.875rem;">Privacy Policy</a>
+                <a href="#" style="color: var(--text-secondary); font-size: 0.875rem;">Terms of Service</a>
+                <a href="#" style="color: var(--text-secondary); font-size: 0.875rem;">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/chatbot.js"></script>
+</body>
+
+</html>

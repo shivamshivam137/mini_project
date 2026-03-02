@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Civitas | Civic Learning Academy</title>
+    <meta name="description"
+        content="Master civic literacy through structured learning modules, quizzes, and interactive content. Earn civic score points and badges on your journey to active citizenship.">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/learning.css">
+    <link rel="stylesheet" href="../css/chatbot.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+</head>
+
+<body>
+    <div class="mesh-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    <nav id="app-navigation">
+        <div class="container nav-content">
+            <a href="../index.html" class="logo">
+                <i data-lucide="shield-check"></i>
+                <span>Civitas</span>
+            </a>
+
+            <button class="mobile-toggle" onclick="toggleMenu()">
+                <i data-lucide="menu"></i>
+            </button>
+
+            <ul class="nav-links" id="nav-links">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="learning.html" class="nav-link active">Learning</a></li>
+                <li><a href="schemes.html" class="nav-link">Schemes</a></li>
+                <li><a href="participation.html" class="nav-link">Participation</a></li>
+                <li><a href="reports.html" class="nav-link">Reports</a></li>
+                <li><a href="resources.html" class="nav-link">Resources</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="main-content" class="container"
+        style="padding-top: var(--spacing-2xl); padding-bottom: var(--spacing-2xl);">
+        <div class="section-header reveal reveal-up" style="margin-bottom: var(--spacing-2xl);">
+            <h1 class="section-title" style="font-size: 2.2rem;">Civic Learning Academy</h1>
+            <p class="section-description" style="max-width: 650px; margin: 0 auto;">
+                Master the art of being a citizen. Complete structured modules, pass quizzes, and earn your civic score
+                — from curious observer to community leader.
+            </p>
+        </div>
+
+        <div class="learning-layout">
+            <!-- Main Content Area (Roadmap / Module View) -->
+            <div id="learning-content">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 40px 0;">
+                    <div class="loader" style="display: block;"></div>
+                    <p style="text-align: center; color: var(--text-secondary); font-size: 0.9rem;">Loading your civic
+                        journey...</p>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <aside id="learning-sidebar" class="learning-sidebar reveal reveal-up">
+                <!-- Populated dynamically by learning-engine.js -->
+            </aside>
+        </div>
+    </main>
+
+    <footer style="padding: var(--spacing-2xl) 0; border-top: 1px solid var(--border-color); margin-top: auto;">
+        <div class="container"
+            style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-md);">
+            <div>
+                <div class="logo">
+                    <i data-lucide="shield-check"></i>
+                    <span>Civitas</span>
+                </div>
+                <p style="color: var(--text-tertiary); font-size: 0.875rem; margin-top: var(--spacing-sm);">Empowering
+                    citizens through knowledge and action.</p>
+            </div>
+            <div style="display: flex; gap: var(--spacing-xl);">
+                <a href="#" style="color: var(--text-secondary); font-size: 0.875rem;">Privacy Policy</a>
+                <a href="#" style="color: var(--text-secondary); font-size: 0.875rem;">Terms of Service</a>
+                <a href="#" style="color: var(--text-secondary); font-size: 0.875rem;">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/learning-engine.js"></script>
+    <script src="../js/chatbot.js"></script>
+</body>
+
+</html>

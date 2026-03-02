@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Civitas | Participation</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/chatbot.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+
+<body>
+    <div class="mesh-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <nav id="app-navigation">
+        <div class="container nav-content">
+            <a href="../index.html" class="logo">
+                <i data-lucide="shield-check"></i>
+                <span>Civitas</span>
+            </a>
+            <button class="mobile-toggle" onclick="toggleMenu()"><i data-lucide="menu"></i></button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="learning.html" class="nav-link">Learning</a></li>
+                <li><a href="schemes.html" class="nav-link">Schemes</a></li>
+                <li><a href="participation.html" class="nav-link active">Participation</a></li>
+                <li><a href="reports.html" class="nav-link">Reports</a></li>
+                <li><a href="elections.html" class="nav-link">Elections</a></li>
+                <li><a href="resources.html" class="nav-link">Resources</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="main-content" class="container">
+        <div class="section-header reveal reveal-up">
+            <h1 class="section-title">Your Voice Matters</h1>
+            <p class="section-description">Participate in governance. Share your feedback, suggestions, or report issues
+                directly to us.</p>
+        </div>
+
+        <div style="max-width: 600px; margin: 0 auto;" class="reveal reveal-up">
+            <div class="card">
+                <h3 style="margin-bottom: 20px;">Submit Feedback</h3>
+                <form id="feedbackForm" onsubmit="submitFeedback(event)">
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">Full Name
+                            (Optional)</label>
+                        <input type="text" id="userName" placeholder="John Doe"
+                            style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-color);">
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">Your Message</label>
+                        <textarea id="userMessage" rows="5" placeholder="I think the new park project..." required
+                            style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-color);"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Feedback</button>
+                </form>
+                <div id="feedbackResult" style="margin-top: 20px; display: none; padding: 10px; border-radius: 8px;">
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+
+        async function submitFeedback(e) {
+            e.preventDefault();
+            const name = document.getElementById('userName').value;
+            const message = document.getElementById('userMessage').value;
+            const resBox = document.getElementById('feedbackResult');
+
+            resBox.style.display = 'none';
+
+            try {
+                const res = await fetch(`${API_URL}/feedback`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, message })
+                });
+                const data = await res.json();
+
+                if (data.status === 'success') {
+                    resBox.style.display = 'block';
+                    resBox.style.background = '#E8F5E9';
+                    resBox.style.color = '#2E7D32';
+                    resBox.innerHTML = `<strong>Thank you!</strong> Your feedback was recorded. (Sentiment Analysis: ${data.sentiment})`;
+                    document.getElementById('feedbackForm').reset();
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (err) {
+                resBox.style.display = 'block';
+                resBox.style.background = '#FFEBEE';
+                resBox.style.color = '#C62828';
+                resBox.innerText = "Error submitting feedback.";
+            }
+        }
+    </script>
+</body>
+
+</html>

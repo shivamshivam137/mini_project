@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Civitas | Elections</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/chatbot.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <style>
+        .candidate-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .candidate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .candidate-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 12px;
+            border: 3px solid var(--accent-color);
+        }
+
+        .party-badge {
+            background: var(--accent-muted);
+            color: var(--accent-color);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin: 8px 0;
+            padding-bottom: 4px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .compare-checkbox {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .compare-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-primary);
+            color: var(--bg-color);
+            padding: 12px 24px;
+            border-radius: 50px;
+            display: none;
+            /* Flex when active */
+            align-items: center;
+            gap: 16px;
+            box-shadow: var(--shadow-xl);
+            z-index: 100;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mesh-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <nav id="app-navigation">
+        <div class="container nav-content">
+            <a href="../index.html" class="logo"><i data-lucide="shield-check"></i><span>Civitas</span></a>
+            <button class="mobile-toggle" onclick="toggleMenu()"><i data-lucide="menu"></i></button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="learning.html" class="nav-link">Learning</a></li>
+                <li><a href="schemes.html" class="nav-link">Schemes</a></li>
+                <li><a href="participation.html" class="nav-link">Participation</a></li>
+                <li><a href="reports.html" class="nav-link">Reports</a></li>
+                <li><a href="elections.html" class="nav-link active">Elections</a></li>
+                <li><a href="resources.html" class="nav-link">Resources</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="main-content" class="container">
+        <div class="section-header reveal reveal-up">
+            <h1 class="section-title">Know Your Candidates</h1>
+            <p class="section-description">Unbiased data on candidates in your constituency. Compare education, assets,
+                and criminal records.</p>
+        </div>
+
+        <div id="candidates-grid"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--spacing-xl);">
+            <!-- Candidates Injected Here -->
+            <div class="loader" style="display: block; margin: 0 auto; grid-column: 1/-1;"></div>
+        </div>
+
+        <!-- Sticky Compare Bar -->
+        <div id="compareBar" class="compare-bar">
+            <span><span id="count">0</span> Selected</span>
+            <button class="btn btn-primary" onclick="compareCandidates()">Compare with AI</button>
+            <button style="background:none; border:none; color: #fff; cursor: pointer;"
+                onclick="clearSelection()">✖</button>
+        </div>
+
+        <!-- AI Comparison Modal -->
+        <div id="compareModal" class="modal"
+            style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000;">
+            <div class="modal-content"
+                style="background:var(--surface-color); width:80%; max-width:800px; margin:5% auto; padding:30px; border-radius:12px; position:relative;">
+                <span style="position:absolute; top:20px; right:20px; font-size:24px; cursor:pointer;"
+                    onclick="closeModal()">✖</span>
+                <h2>AI Candidate Comparison</h2>
+                <div id="comparison-result" style="margin-top:20px; line-height:1.6; white-space: pre-wrap;">
+                    <div class="loader" style="display:block; margin:20px auto;"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/chatbot.js"></script>
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        let selectedCandidates = [];
+
+        async function loadCandidates() {
+            const container = document.getElementById('candidates-grid');
+            try {
+                const res = await fetch(`${API_URL}/candidates`);
+                const candidates = await res.json();
+
+                container.innerHTML = '';
+                candidates.forEach(c => {
+                    const card = document.createElement('div');
+                    card.className = 'candidate-card reveal reveal-up';
+                    card.innerHTML = `
+                        <input type="checkbox" class="compare-checkbox" onchange="toggleSelect(${c.id}, this)">
+                        <img src="${c.image_url}" class="candidate-img" alt="${c.name}">
+                        <h3 style="margin-bottom: 4px;">${c.name}</h3>
+                        <span class="party-badge">${c.party}</span>
+                        <div style="margin-top: 16px; text-align: left;">
+                            <div class="stat-row"><span>🎓 Education</span> <strong>${c.education}</strong></div>
+                            <div class="stat-row"><span>💰 Assets</span> <strong>${c.assets}</strong></div>
+                            <div class="stat-row" style="color: ${c.criminal_cases > 0 ? '#ff4444' : 'inherit'}">
+                                <span>⚖️ Criminal Cases</span> <strong>${c.criminal_cases}</strong>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.8rem; margin-top: 10px; color: var(--text-tertiary);">Constituency: ${c.constituency}</p>
+                    `;
+                    container.appendChild(card);
+                });
+                lucide.createIcons();
+            } catch (e) {
+                container.innerHTML = '<p>Error loading candidates.</p>';
+            }
+        }
+
+        function toggleSelect(id, checkbox) {
+            if (checkbox.checked) {
+                if (selectedCandidates.length >= 3) {
+                    alert("Select max 3 candidates to compare.");
+                    checkbox.checked = false;
+                    return;
+                }
+                selectedCandidates.push(id);
+            } else {
+                selectedCandidates = selectedCandidates.filter(c => c !== id);
+            }
+            updateBar();
+        }
+
+        function updateBar() {
+            const bar = document.getElementById('compareBar');
+            document.getElementById('count').innerText = selectedCandidates.length;
+            bar.style.display = selectedCandidates.length > 0 ? 'flex' : 'none';
+        }
+
+        function clearSelection() {
+            selectedCandidates = [];
+            document.querySelectorAll('.compare-checkbox').forEach(c => c.checked = false);
+            updateBar();
+        }
+
+        function closeModal() { document.getElementById('compareModal').style.display = 'none'; }
+
+        async function compareCandidates() {
+            document.getElementById('compareModal').style.display = 'block';
+            const resultBox = document.getElementById('comparison-result');
+            resultBox.innerHTML = '<div class="loader" style="display:block; margin:20px auto;"></div>';
+
+            try {
+                const res = await fetch(`${API_URL}/chat/compare-candidates`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ids: selectedCandidates })
+                });
+                const data = await res.json();
+                resultBox.innerHTML = data.comparison;
+            } catch (e) {
+                resultBox.innerHTML = "Error analyzing data.";
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadCandidates);
+    </script>
+</body>
+
+</html>

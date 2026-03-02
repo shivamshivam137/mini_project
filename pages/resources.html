@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Civitas | Resources</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/chatbot.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+
+<body>
+    <div class="mesh-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    <nav id="app-navigation">
+        <div class="container nav-content">
+            <a href="../index.html" class="logo">
+                <i data-lucide="shield-check"></i>
+                <span>Civitas</span>
+            </a>
+
+            <button class="mobile-toggle" onclick="toggleMenu()">
+                <i data-lucide="menu"></i>
+            </button>
+
+            <ul class="nav-links" id="nav-links">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="learning.html" class="nav-link">Learning</a></li>
+                <li><a href="schemes.html" class="nav-link">Schemes</a></li>
+                <li><a href="participation.html" class="nav-link">Participation</a></li>
+                <li><a href="reports.html" class="nav-link">Reports</a></li>
+                <li><a href="resources.html" class="nav-link active">Resources</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="main-content" class="container">
+        <div class="section-header reveal reveal-up">
+            <h1 class="section-title">Knowledge Library</h1>
+            <p class="section-description">Quick answers, official documentation, and essential contact directories.
+                Everything you need to navigate civic life.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 2fr 1fr; gap: var(--spacing-2xl);">
+            <!-- Column 1: Categories -->
+            <div class="reveal reveal-up">
+                <h3
+                    style="font-size: 1rem; color: var(--text-tertiary); text-transform: uppercase; margin-bottom: var(--spacing-lg);">
+                    Quick Categories</h3>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <a href="elections.html" class="card"
+                        style="padding: 12px; cursor: pointer; transition: 0.2s; border-color: transparent; background: var(--surface-color); display: block; text-decoration: none; color: inherit;">
+                        <p style="font-weight: 600; font-size: 0.9rem;"><i data-lucide="vote"
+                                style="width: 16px; margin-right: 8px; vertical-align: middle;"></i> Elections</p>
+                    </a>
+                    <a href="voter-education.html" class="card"
+                        style="padding: 12px; cursor: pointer; transition: 0.2s; border-color: transparent; display: block; text-decoration: none; color: inherit;">
+                        <p style="font-weight: 600; font-size: 0.9rem;"><i data-lucide="book-open"
+                                style="width: 16px; margin-right: 8px; vertical-align: middle;"></i> Voter Education</p>
+                    </a>
+                    <a href="taxes.html" class="card"
+                        style="padding: 12px; cursor: pointer; transition: 0.2s; border-color: transparent; display: block; text-decoration: none; color: inherit;">
+                        <p style="font-weight: 600; font-size: 0.9rem;"><i data-lucide="landmark"
+                                style="width: 16px; margin-right: 8px; vertical-align: middle;"></i> Municipal Tax</p>
+                    </a>
+                    <a href="emergency.html" class="card"
+                        style="padding: 12px; cursor: pointer; transition: 0.2s; border-color: transparent; display: block; text-decoration: none; color: inherit;">
+                        <p style="font-weight: 600; font-size: 0.9rem;"><i data-lucide="shield-alert"
+                                style="width: 16px; margin-right: 8px; vertical-align: middle;"></i> Emergency Protocols
+                        </p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Column 2: Detailed FAQ -->
+            <div>
+                <h3 style="margin-bottom: var(--spacing-lg); font-size: 1.25rem;">Frequently Asked Questions</h3>
+                <div class="stagger-group">
+                    <div class="accordion reveal reveal-up">
+                        <button class="accordion-header" onclick="this.parentElement.classList.toggle('active')">
+                            How do I register to vote online? <i data-lucide="chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <p style="padding-bottom: 12px;">You can register via the National Election Portal. You will
+                                need a valid ID, proof of address, and 5 minutes of your time. Deadlines vary by state.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="accordion reveal reveal-up">
+                        <button class="accordion-header" onclick="this.parentElement.classList.toggle('active')">
+                            Where is my local council office? <i data-lucide="chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <p style="padding-bottom: 12px;">Use our 'Office Locator' tool in the sidebar. Enter your
+                                zip code to find the nearest administrative building and their public hours.</p>
+                        </div>
+                    </div>
+                    <div class="accordion reveal reveal-up">
+                        <button class="accordion-header" onclick="this.parentElement.classList.toggle('active')">
+                            Renewing professional licenses? <i data-lucide="chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <p style="padding-bottom: 12px;">Most renewals are now handled through the 'CivicPlus'
+                                portal. Ensure your continuing education credits are uploaded first.</p>
+                        </div>
+                    </div>
+                    <div class="accordion reveal reveal-up">
+                        <button class="accordion-header" onclick="this.parentElement.classList.toggle('active')">
+                            Waste collection schedule? <i data-lucide="chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <p style="padding-bottom: 12px;">General waste is collected Tuesdays, Recycling on
+                                Thursdays. Hazardous waste requires a special appointment at the depot.</p>
+                        </div>
+                    </div>
+                    <!-- New FAQ Items -->
+                    <div class="accordion reveal reveal-up">
+                        <button class="accordion-header" onclick="this.parentElement.classList.toggle('active')">
+                            How are property taxes calculated? <i data-lucide="chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <p style="padding-bottom: 12px;">Taxes are based on the assessed market value of your
+                                property multiplied by the local millage rate. Assessments occur every 3 years.</p>
+                        </div>
+                    </div>
+                    <div class="accordion reveal reveal-up">
+                        <button class="accordion-header" onclick="this.parentElement.classList.toggle('active')">
+                            Can I suggest a new public project? <i data-lucide="chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <p style="padding-bottom: 12px;">Yes! Use the 'Participation Hub' to submit a formal
+                                proposal or join the Planning Committee meetings held every first Monday of the month.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="accordion reveal reveal-up">
+                        <button class="accordion-header" onclick="this.parentElement.classList.toggle('active')">
+                            Do I need a permit for a pet? <i data-lucide="chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <p style="padding-bottom: 12px;">Dogs require a municipal license renewed annually. Cats and
+                                smaller pets do not, but they must be microchipped by law.</p>
+                        </div>
+                    </div>
+                    <div class="accordion reveal reveal-up">
+                        <button class="accordion-header" onclick="this.parentElement.classList.toggle('active')">
+                            How to apply for reduced transit fares? <i data-lucide="chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <p style="padding-bottom: 12px;">Students, seniors (65+), and residents with disabilities
+                                can apply for the 'CivicPass' at any transit hub with valid ID and proof of status.</p>
+                        </div>
+                    </div>
+                    <div class="accordion reveal reveal-up">
+                        <button class="accordion-header" onclick="this.parentElement.classList.toggle('active')">
+                            Who maintains the trees on my street? <i data-lucide="chevron-down"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <p style="padding-bottom: 12px;">The Department of Public Works maintains all trees within
+                                the city's right-of-way. Private property trees are the owner's responsibility.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 3: Contacts & Tools -->
+            <div class="reveal reveal-up">
+                <h3
+                    style="font-size: 1rem; color: var(--text-tertiary); text-transform: uppercase; margin-bottom: var(--spacing-lg);">
+                    Support & Tools</h3>
+                <div class="card"
+                    style="background: var(--accent-color); color: var(--bg-color); margin-bottom: var(--spacing-lg);">
+                    <p
+                        style="font-size: 0.75rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">
+                        General Helpline</p>
+                    <p style="font-size: 1.25rem; font-weight: 700;">1-800-CIVITAS</p>
+                </div>
+
+                <div class="card" style="margin-bottom: var(--spacing-lg);">
+                    <h4 style="font-size: 0.9rem; margin-bottom: 8px;">Document Prep Kit</h4>
+                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 12px;">Download our
+                        checklist for ID applications.</p>
+                    <button class="btn btn-outline" style="width: 100%; font-size: 0.8rem;">Download PDF</button>
+                </div>
+
+                <div class="card" style="background: var(--surface-color); border: none;">
+                    <h4 style="font-size: 0.9rem; margin-bottom: 4px;">Office Hours</h4>
+                    <p style="font-size: 0.75rem; color: var(--text-secondary);">Mon - Fri: 9AM - 5PM</p>
+                    <p style="font-size: 0.75rem; color: var(--text-secondary);">Sat: 10AM - 2PM</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="padding: var(--spacing-2xl) 0; border-top: 1px solid var(--border-color); margin-top: auto;">
+        <div class="container"
+            style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-md);">
+            <div>
+                <div class="logo">
+                    <i data-lucide="shield-check"></i>
+                    <span>Civitas</span>
+                </div>
+                <p style="color: var(--text-tertiary); font-size: 0.875rem; margin-top: var(--spacing-sm);">Empowering
+                    citizens through knowledge and action.</p>
+            </div>
+            <div style="display: flex; gap: var(--spacing-xl);">
+                <a href="#" style="color: var(--text-secondary); font-size: 0.875rem;">Privacy Policy</a>
+                <a href="#" style="color: var(--text-secondary); font-size: 0.875rem;">Terms of Service</a>
+                <a href="#" style="color: var(--text-secondary); font-size: 0.875rem;">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/chatbot.js"></script>
+</body>
+
+</html>

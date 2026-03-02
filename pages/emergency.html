@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Preparedness | Civitas</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/chatbot.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <style>
+        .emergency-banner {
+            background-color: #D32F2F;
+            color: white;
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            margin-bottom: var(--spacing-2xl);
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% {
+                box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(211, 47, 47, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(211, 47, 47, 0);
+            }
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .contact-card {
+            background: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .contact-card:hover {
+            border-color: #D32F2F;
+            transform: translateY(-2px);
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-xl);
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: var(--radius-md);
+            background: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mesh-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <nav id="app-navigation">
+        <div class="container nav-content">
+            <a href="../index.html" class="logo">
+                <i data-lucide="shield-check"></i>
+                <span>Civitas</span>
+            </a>
+            <button class="mobile-toggle" onclick="toggleMenu()"><i data-lucide="menu"></i></button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="learning.html" class="nav-link">Learning</a></li>
+                <li><a href="schemes.html" class="nav-link">Schemes</a></li>
+                <li><a href="participation.html" class="nav-link">Participation</a></li>
+                <li><a href="reports.html" class="nav-link">Reports</a></li>
+                <li><a href="resources.html" class="nav-link">Resources</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="main-content" class="container">
+        <div class="section-header reveal reveal-up">
+            <h1 class="section-title">Emergency Protocols</h1>
+            <p class="section-description">Immediate contacts and preparedness guides for crisis situations. Stay calm,
+                stay informed.</p>
+        </div>
+
+        <!-- Immediate Contacts -->
+        <div class="emergency-banner reveal reveal-up">
+            <h2 style="margin-bottom: var(--spacing-sm); font-size: 2rem;">IMMEDIATE DANGER?</h2>
+            <p style="font-size: 1.25rem;">CALL <strong>911</strong> (USA) OR <strong>112</strong> (Global Standard)</p>
+        </div>
+
+        <div class="contact-grid stagger-group">
+            <div class="contact-card reveal reveal-up">
+                <i data-lucide="flame" style="width: 48px; height: 48px; color: #D32F2F; margin-bottom: 12px;"></i>
+                <h3>Fire Department</h3>
+                <p style="font-size: 1.5rem; font-weight: 700; color: #D32F2F;">101</p>
+            </div>
+            <div class="contact-card reveal reveal-up">
+                <i data-lucide="shield-alert"
+                    style="width: 48px; height: 48px; color: #1976D2; margin-bottom: 12px;"></i>
+                <h3>Police</h3>
+                <p style="font-size: 1.5rem; font-weight: 700; color: #1976D2;">100</p>
+            </div>
+            <div class="contact-card reveal reveal-up">
+                <i data-lucide="ambulance" style="width: 48px; height: 48px; color: #388E3C; margin-bottom: 12px;"></i>
+                <h3>Ambulance</h3>
+                <p style="font-size: 1.5rem; font-weight: 700; color: #388E3C;">102/108</p>
+            </div>
+            <div class="contact-card reveal reveal-up">
+                <i data-lucide="cloud-lightning"
+                    style="width: 48px; height: 48px; color: #FBC02D; margin-bottom: 12px;"></i>
+                <h3>Disaster Management</h3>
+                <p style="font-size: 1.5rem; font-weight: 700; color: #FBC02D;">1078</p>
+            </div>
+        </div>
+
+        <!-- Preparedness Videos -->
+        <section class="reveal reveal-up" style="margin-bottom: var(--spacing-2xl);">
+            <h2 style="margin-bottom: var(--spacing-lg);">Visual Guides & Tutorials</h2>
+            <div class="video-grid stagger-group">
+                <!-- Video 1: General Prep -->
+                <div class="card reveal reveal-up" style="padding: 0; overflow: hidden;">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/JCD8gP4t1hM"
+                            title="7 Ways to Survive Natural Disasters" allowfullscreen></iframe>
+                    </div>
+                    <div style="padding: var(--spacing-md);">
+                        <h4>7 Ways to Survive Natural Disasters</h4>
+                        <p class="card-text">Quick actionable tips for floods, earthquakes, and more.</p>
+                    </div>
+                </div>
+
+                <!-- Video 2: FEMA Planning -->
+                <div class="card reveal reveal-up" style="padding: 0; overflow: hidden;">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/5D1gV6rWk8k" title="5 Essential Tips to Prepare"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div style="padding: var(--spacing-md);">
+                        <h4>5 Essential Tips to Prepare</h4>
+                        <p class="card-text">Expert advice on family plans and communication strategies.</p>
+                    </div>
+                </div>
+
+                <!-- Video 3: Kit Building -->
+                <div class="card reveal reveal-up" style="padding: 0; overflow: hidden;">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/ysBvWiwjTQM" title="Build a Disaster Kit"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div style="padding: var(--spacing-md);">
+                        <h4>Build an Emergency Kit</h4>
+                        <p class="card-text">What to pack for a 72-hour survival bag.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Disaster Kit Checklist -->
+        <section class="reveal reveal-up"
+            style="background: white; padding: var(--spacing-xl); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+            <div
+                style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--spacing-lg);">
+                <div style="flex: 1; min-width: 300px;">
+                    <h2 style="margin-bottom: var(--spacing-md);">Basic Disaster Supplies Kit</h2>
+                    <p style="margin-bottom: var(--spacing-lg); color: var(--text-secondary);">Prepare these items in
+                        easy-to-carry bags before disaster strikes.</p>
+
+                    <div class="checklist-item">
+                        <i data-lucide="check-square" style="color: var(--accent-color);"></i>
+                        <span>Water (one gallon per person per day for 3 days)</span>
+                    </div>
+                    <div class="checklist-item">
+                        <i data-lucide="check-square" style="color: var(--accent-color);"></i>
+                        <span>Food (non-perishable 3-day supply)</span>
+                    </div>
+                    <div class="checklist-item">
+                        <i data-lucide="check-square" style="color: var(--accent-color);"></i>
+                        <span>Battery-powered radio & extra batteries</span>
+                    </div>
+                    <div class="checklist-item">
+                        <i data-lucide="check-square" style="color: var(--accent-color);"></i>
+                        <span>Flashlight & First Aid Kit</span>
+                    </div>
+                    <div class="checklist-item">
+                        <i data-lucide="check-square" style="color: var(--accent-color);"></i>
+                        <span>Whistle (to signal for help)</span>
+                    </div>
+                    <div class="checklist-item">
+                        <i data-lucide="check-square" style="color: var(--accent-color);"></i>
+                        <span>Dust mask, plastic sheeting, and duct tape</span>
+                    </div>
+                </div>
+
+                <div
+                    style="flex: 0 0 300px; text-align: center; background: #FFF3E0; padding: var(--spacing-lg); border-radius: var(--radius-md);">
+                    <i data-lucide="download-cloud"
+                        style="width: 48px; height: 48px; color: #E65100; margin-bottom: 12px;"></i>
+                    <h4>Download Full Checklist</h4>
+                    <p style="font-size: 0.8rem; margin-bottom: var(--spacing-md);">PDF Format • 2.5 MB</p>
+                    <button class="btn btn-primary" style="width: 100%;">Download Now</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer style="padding: var(--spacing-2xl) 0; border-top: 1px solid var(--border-color); margin-top: auto;">
+        <div class="container" style="text-align: center;">
+            <p style="color: var(--text-tertiary); font-size: 0.875rem;">In an emergency, always follow local authority
+                instructions first.</p>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/chatbot.js"></script>
+</body>
+
+</html>

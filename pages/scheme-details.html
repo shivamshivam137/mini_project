@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheme Details | Civitas</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/chatbot.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <!-- Schemes Data removed, fetching from Firebase -->
+    <style>
+        .sidebar-sticky {
+            position: sticky;
+            top: 100px;
+        }
+
+        .benefit-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .benefit-list li {
+            position: relative;
+            padding-left: 24px;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .benefit-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mesh-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <nav id="app-navigation">
+        <div class="container nav-content">
+            <a href="../index.html" class="logo">
+                <i data-lucide="shield-check"></i>
+                <span>Civitas</span>
+            </a>
+            <button class="mobile-toggle" onclick="toggleMenu()"><i data-lucide="menu"></i></button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="learning.html" class="nav-link">Learning</a></li>
+                <li><a href="schemes.html" class="nav-link">Schemes</a></li>
+                <li><a href="participation.html" class="nav-link">Participation</a></li>
+                <li><a href="reports.html" class="nav-link">Reports</a></li>
+                <li><a href="resources.html" class="nav-link">Resources</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="main-content" class="container">
+        <!-- Back Link -->
+        <div class="reveal reveal-up" style="margin-top: var(--spacing-xl);">
+            <a href="schemes.html"
+                style="display: inline-flex; align-items: center; gap: 8px; color: var(--text-tertiary); text-decoration: none;">
+                <i data-lucide="arrow-left" style="width: 16px;"></i> Back to All Schemes
+            </a>
+        </div>
+
+        <div id="loading" style="text-align: center; padding: 4rem;">
+            <h2>Loading Scheme Details...</h2>
+        </div>
+
+        <div id="scheme-content" style="display: none;">
+            <!-- Header -->
+            <div class="section-header reveal reveal-up">
+                <span class="tag" id="scheme-tag" style="margin-bottom: 8px;">Category</span>
+                <h1 class="section-title" id="scheme-title">Scheme Title</h1>
+                <p class="section-description" id="scheme-ministry"
+                    style="color: var(--text-secondary); font-weight: 600;">Ministry Name</p>
+                <p class="section-description" id="scheme-overview"
+                    style="margin-top: var(--spacing-md); max-width: 100%; line-height: 1.8; text-align: justify;">
+                    Overview
+                    text...</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-2xl);">
+                <!-- Main Content -->
+                <div class="stagger-group">
+                    <div class="card reveal reveal-up">
+                        <h2 class="card-title"><i data-lucide="gift"
+                                style="vertical-align: middle; margin-right: 8px;"></i> Benefits</h2>
+                        <ul class="benefit-list" id="scheme-benefits">
+                            <!-- Populated via JS -->
+                        </ul>
+                    </div>
+
+                    <div class="card reveal reveal-up" style="margin-top: var(--spacing-lg);">
+                        <h2 class="card-title"><i data-lucide="check-circle"
+                                style="vertical-align: middle; margin-right: 8px;"></i> Eligibility Criteria</h2>
+                        <ul class="benefit-list" id="scheme-eligibility">
+                            <!-- Populated via JS -->
+                        </ul>
+                    </div>
+
+                    <div class="card reveal reveal-up" style="margin-top: var(--spacing-lg);">
+                        <h2 class="card-title"><i data-lucide="file-text"
+                                style="vertical-align: middle; margin-right: 8px;"></i> Application Process</h2>
+                        <div class="step-container" id="scheme-process" style="margin-top: var(--spacing-md);">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <aside class="sidebar-sticky reveal reveal-up">
+                    <div class="card" style="border-top: 4px solid var(--accent-color);">
+                        <h3>Ready to Apply?</h3>
+                        <p class="card-text" style="margin-bottom: var(--spacing-md);">Ensure you have your Aadhaar card
+                            and Income Certificate ready.</p>
+                        <a href="#" id="apply-btn" target="_blank" class="btn btn-primary"
+                            style="width: 100%; display: flex; justify-content: center;">
+                            Apply on Official Website <i data-lucide="external-link" style="width: 16px;"></i>
+                        </a>
+                        <p
+                            style="font-size: 0.75rem; text-align: center; margin-top: 8px; color: var(--text-secondary);">
+                            Redirects to government portal</p>
+                    </div>
+
+                    <div class="card" style="margin-top: var(--spacing-lg);">
+                        <h3>Documents Required</h3>
+                        <ul class="benefit-list" style="font-size: 0.85rem; margin-top: 8px;">
+                            <li>Aadhaar Card</li>
+                            <li>Bank Passbook</li>
+                            <li>Income Certificate</li>
+                            <li>Passport Size Photo</li>
+                        </ul>
+                    </div>
+                </aside>
+            </div>
+        </div>
+
+        <div id="error-content" style="display: none; text-align: center; padding: 4rem;">
+            <h2>Scheme Not Found</h2>
+            <p>We couldn't find the scheme you're looking for.</p>
+            <a href="schemes.html" class="btn btn-primary" style="margin-top: 1rem;">Browse All Schemes</a>
+        </div>
+    </main>
+
+    <footer style="padding: var(--spacing-2xl) 0; border-top: 1px solid var(--border-color); margin-top: auto;">
+        <div class="container" style="text-align: center;">
+            <div class="logo" style="justify-content: center; margin-bottom: 8px;">
+                <i data-lucide="shield-check"></i>
+                <span>Civitas</span>
+            </div>
+            <p style="color: var(--text-tertiary); font-size: 0.875rem;">Connecting citizens to their rights.</p>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/chatbot.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const schemeId = urlParams.get('id');
+            const loading = document.getElementById('loading');
+            const content = document.getElementById('scheme-content');
+            const error = document.getElementById('error-content');
+
+            if (!schemeId) {
+                loading.style.display = 'none';
+                error.style.display = 'block';
+                return;
+            }
+
+            try {
+                const docRef = db.collection('schemes').doc(schemeId);
+                const doc = await docRef.get();
+
+                if (doc.exists) {
+                    const data = doc.data();
+
+                    // Populate Headers
+                    document.getElementById('scheme-title').innerText = data.name || data.title;
+                    document.getElementById('scheme-ministry').innerText = data.ministry || "Government of India";
+                    document.getElementById('scheme-tag').innerText = data.category || "General";
+                    document.getElementById('scheme-overview').innerText = data.overview || data.description;
+                    document.title = `${data.name || data.title} | Civitas`;
+
+                    // Populate Benefits (Handle Array or String)
+                    const benefitsList = document.getElementById('scheme-benefits');
+                    benefitsList.innerHTML = ''; // Clear previous
+                    if (Array.isArray(data.benefits)) {
+                        data.benefits.forEach(item => {
+                            const li = document.createElement('li');
+                            li.innerText = item;
+                            benefitsList.appendChild(li);
+                        });
+                    } else {
+                        // If string, try splitting by newline or just show as one item
+                        const li = document.createElement('li');
+                        li.innerText = data.benefits;
+                        benefitsList.appendChild(li);
+                    }
+
+                    // Populate Eligibility (Handle Array or String)
+                    const eligibilityList = document.getElementById('scheme-eligibility');
+                    eligibilityList.innerHTML = '';
+                    if (Array.isArray(data.eligibility)) {
+                        data.eligibility.forEach(item => {
+                            const li = document.createElement('li');
+                            li.innerText = item;
+                            eligibilityList.appendChild(li);
+                        });
+                    } else if (Array.isArray(data.eligibility_criteria)) {
+                        data.eligibility_criteria.forEach(item => {
+                            const li = document.createElement('li');
+                            li.innerText = item;
+                            eligibilityList.appendChild(li);
+                        });
+                    } else {
+                        const li = document.createElement('li');
+                        li.innerText = data.eligibility_criteria || "Check official website.";
+                        eligibilityList.appendChild(li);
+                    }
+
+                    // Populate Process
+                    const processContainer = document.getElementById('scheme-process');
+                    processContainer.innerHTML = '';
+                    const steps = data.applicationProcess || ["Visit the official website.", "Follow instructions to apply."];
+                    steps.forEach((step, index) => {
+                        const div = document.createElement('div');
+                        div.className = 'step-item';
+                        div.innerHTML = `
+                            <div class="step-number" style="display:flex;align-items:center;justify-content:center;color:white;font-size:0.7rem;">${index + 1}</div>
+                            <h4 class="step-title">Step ${index + 1}</h4>
+                            <p class="card-text">${step}</p>
+                         `;
+                        if (index > 0) div.style.marginTop = 'var(--spacing-lg)';
+                        processContainer.appendChild(div);
+                    });
+
+                    // Populate Link
+                    const applyBtn = document.getElementById('apply-btn');
+                    if (data.official_link || data.officialLink) {
+                        applyBtn.href = data.official_link || data.officialLink;
+                    } else {
+                        applyBtn.style.display = 'none'; // Hide if no link
+                    }
+
+
+                    // Show content
+                    loading.style.display = 'none';
+                    content.style.display = 'block';
+
+                    if (window.lucide) window.lucide.createIcons();
+
+                } else {
+                    console.error("No such document!");
+                    loading.style.display = 'none';
+                    error.style.display = 'block';
+                }
+            } catch (e) {
+                console.error("Error fetching scheme:", e);
+                loading.style.display = 'none';
+                error.querySelector('p').innerText = "Error loading scheme details. Please try again.";
+                error.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+
+</html>

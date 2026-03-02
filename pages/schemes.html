@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Civitas | Schemes</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/chatbot.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <style>
+        /* Modern Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--surface-color);
+            margin: 10% auto;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            width: 90%;
+            max-width: 600px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: var(--accent-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            font-family: inherit;
+        }
+
+        .ai-result-box {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--accent-muted);
+            border-left: 4px solid var(--accent-color);
+            border-radius: 8px;
+            display: none;
+        }
+
+        .loader {
+            border: 4px solid var(--bg-color);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mesh-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="app-navigation">
+        <div class="container nav-content">
+            <a href="../index.html" class="logo">
+                <i data-lucide="shield-check"></i>
+                <span>Civitas</span>
+            </a>
+            <button class="mobile-toggle" onclick="toggleMenu()"><i data-lucide="menu"></i></button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="learning.html" class="nav-link">Learning</a></li>
+                <li><a href="schemes.html" class="nav-link active">Schemes</a></li>
+                <li><a href="participation.html" class="nav-link">Participation</a></li>
+                <li><a href="reports.html" class="nav-link">Reports</a></li>
+                <li><a href="resources.html" class="nav-link">Resources</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="main-content" class="container">
+        <div class="reveal reveal-up"
+            style="display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: var(--spacing-2xl); padding: var(--spacing-xl) 0; border-bottom: 2px solid var(--border-color);">
+            <div class="section-header" style="margin: 0;">
+                <h1 class="section-title">Government Schemes</h1>
+                <p class="section-description">Personalized public services. We track 30+ active programs in your
+                    region.</p>
+            </div>
+            <div
+                style="display: flex; gap: var(--spacing-md); background: var(--surface-color); padding: 8px; border-radius: var(--radius-md);">
+                <button class="btn btn-outline" style="border: none; padding: 0.5rem 1rem;"
+                    onclick="loadSchemes('All Categories')">All Schemes</button>
+                <!-- AI Feature Trigger -->
+                <button class="btn btn-primary" onclick="openModal()"
+                    style="display: flex; gap: 8px; align-items: center;">
+                    <i data-lucide="sparkles" width="16"></i> Find My Match (AI)
+                </button>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: var(--spacing-2xl);">
+            <!-- Sidebar: Search & Filters -->
+            <aside class="reveal reveal-up">
+                <div class="card" style="position: sticky; top: 100px;">
+                    <h3 style="font-size: 1rem; margin-bottom: var(--spacing-md);">Search & Filter</h3>
+                    <div style="display: flex; flex-direction: column; gap: var(--spacing-lg);">
+                        <div>
+                            <label
+                                style="font-size: 0.75rem; font-weight: 600; color: var(--text-tertiary);">CATEGORY</label>
+                            <select id="categoryFilter" onchange="loadSchemes(this.value)"
+                                style="width: 100%; border: 1px solid var(--border-color); padding: 8px; border-radius: 4px; background: var(--bg-color);">
+                                <option value="All Categories">All Categories</option>
+                                <option value="Education">Education</option>
+                                <option value="Healthcare">Healthcare</option>
+                                <option value="Agriculture">Agriculture</option>
+                                <option value="Housing">Housing</option>
+                                <option value="Business">Business</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content: Dynamic Scheme Cards -->
+            <div id="schemes-container" class="stagger-group"
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--spacing-xl); align-content: start;">
+                <!-- Content injected by JS -->
+                <div class="loader" style="display: block;"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- AI Matchmaker Modal -->
+    <div id="aiModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div
+                    style="background: var(--accent-muted); width: 60px; height: 60px; border-radius: 50%; display: grid; place-items: center; margin: 0 auto 10px;">
+                    <i data-lucide="bot" color="var(--accent-color)" size="32"></i>
+                </div>
+                <h2>AI Scheme Matchmaker</h2>
+                <p style="color: var(--text-secondary);">Tell us a bit about yourself, and our AI will search the
+                    database for your best matches.</p>
+            </div>
+
+            <div class="form-group">
+                <label>Your Profile (Age, Occupation, Income, etc.)</label>
+                <textarea id="userProfile" rows="4"
+                    placeholder="e.g. I am a 21 year old female student pursuing Engineering. My family income is 2 Lakhs per year."></textarea>
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%;" onclick="findMatches()">Find Matches</button>
+            <div id="aiLoader" class="loader"></div>
+            <div id="aiResults" class="ai-result-box"></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/main.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        // API Base URL - Ensure this matches your Flask server port
+        // API Base URL - Try 127.0.0.1 if localhost fails
+        const API_URL = 'http://127.0.0.1:5000/api';
+
+        // 2. Initial Load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSchemes('All Categories');
+        });
+
+        // 1. Fetch & Display Schemes
+        async function loadSchemes(category) {
+            const container = document.getElementById('schemes-container');
+            container.innerHTML = '<div class="loader" style="display: block;"></div>';
+
+            try {
+                let url = `${API_URL}/schemes`;
+                if (category && category !== 'All Categories') {
+                    url += `?category=${encodeURIComponent(category)}`;
+                }
+
+                const res = await fetch(url);
+
+                if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
+
+                const schemes = await res.json();
+
+                container.innerHTML = '';
+
+                if (schemes.length === 0) {
+                    container.innerHTML = '<p>No schemes found.</p>';
+                    return;
+                }
+
+                schemes.forEach((scheme, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'card reveal reveal-up';
+                    card.style.animationDelay = `${index * 50}ms`;
+
+                    // Handle Benefits (Array or String)
+                    let benefitsText = "View details for benefits";
+                    if (Array.isArray(scheme.benefits)) {
+                        benefitsText = scheme.benefits.join(', ');
+                    } else if (typeof scheme.benefits === 'string') {
+                        benefitsText = scheme.benefits;
+                    }
+                    const benefitsShort = benefitsText.length > 40 ? benefitsText.substring(0, 40) + '...' : benefitsText;
+
+                    const incomeText = scheme.income_limit > 0 ? `Income < ₹${(scheme.income_limit / 100000).toFixed(1)}L` : 'For All Incomes';
+
+                    card.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                            <span class="tag" style="background: var(--accent-muted); color: var(--accent-color);">${scheme.category}</span>
+                            <span style="font-size: 0.8rem; color: var(--text-tertiary);">${incomeText}</span>
+                        </div>
+                        <h3 class="card-title">${scheme.name}</h3>
+                        <p class="card-text">${scheme.description}</p>
+                        <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 0.9rem; font-weight: 600;" title="${benefitsText}">${benefitsShort}</span>
+                            <a href="${scheme.official_link}" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 4px;">
+                                Apply <i data-lucide="external-link" width="14"></i>
+                            </a>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+                if (window.lucide) lucide.createIcons();
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = `<div class="card" style="grid-column: 1/-1; text-align: center; color: #dc2626; border: 1px solid #dc2626; background: #fef2f2;">
+                    <h3>⚠️ Connection Failed</h3>
+                    <p><strong>Error:</strong> ${err.message}</p>
+                    <p>Please ensure 'server.py' is running.</p>
+                </div>`;
+            }
+        }
+
+        // 3. Modal Logic
+        const modal = document.getElementById("aiModal");
+        function openModal() { modal.style.display = "block"; }
+        function closeModal() { modal.style.display = "none"; }
+        window.onclick = function (event) { if (event.target == modal) { closeModal(); } }
+
+        // 4. AI Match Function
+        async function findMatches() {
+            const profile = document.getElementById('userProfile').value;
+            const loader = document.getElementById('aiLoader');
+            const resultsBox = document.getElementById('aiResults');
+
+            if (!profile) {
+                alert("Please describe yourself first!");
+                return;
+            }
+
+            loader.style.display = 'block';
+            resultsBox.style.display = 'none';
+            resultsBox.innerHTML = '';
+
+            try {
+                const res = await fetch(`${API_URL}/chat/match`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ profile: profile })
+                });
+
+                if (!res.ok) throw new Error('AI Service Unavailable');
+
+                const data = await res.json();
+                let matches = [];
+
+                // Attempt to parse AI JSON response
+                if (typeof data.matches === 'string') {
+                    try {
+                        // Extract JSON array if embedded in text
+                        const jsonMatch = data.matches.match(/\[.*\]/s);
+                        if (jsonMatch) {
+                            matches = JSON.parse(jsonMatch[0]);
+                        } else {
+                            // Fallback if not JSON
+                            throw new Error("Non-JSON response");
+                        }
+                    } catch (e) {
+                        // Graceful fallback for plain text response
+                        resultsBox.innerHTML = `<div style="white-space: pre-wrap;">${data.matches}</div>`;
+                        resultsBox.style.display = 'block';
+                        loader.style.display = 'none';
+                        return;
+                    }
+                } else {
+                    matches = data.matches;
+                }
+
+                // Render JSON matches
+                let html = '<h3>✨ Top Recommendations for You:</h3><ul style="padding-left: 20px; margin-top: 10px;">';
+                matches.forEach(m => {
+                    const schemeName = m.scheme_name || m.name || "Scheme";
+                    const reason = m.reason || m.description || "";
+                    html += `<li style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed var(--border-color);">
+                        <strong style="color: var(--accent-color); font-size: 1.1em;">${schemeName}</strong><br>
+                        <span style="color: var(--text-secondary); font-size: 0.9em;">${reason}</span>
+                    </li>`;
+                });
+                html += '</ul>';
+
+                resultsBox.innerHTML = html;
+                resultsBox.style.display = 'block';
+
+            } catch (e) {
+                console.error("AI Error:", e);
+                resultsBox.innerHTML = `<p style="color: red;">AI is currently busy. Please try again later. (${e.message})</p>`;
+                resultsBox.style.display = 'block';
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+
+</html>
